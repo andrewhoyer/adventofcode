@@ -4,7 +4,7 @@ This puzzle contains rules for hundreds of bag colors, and which colors those ba
 
 The solution requires a recursive function to search the rules for each bag, and the rules for each bag that bag can hold, and so on.
 
-[https://adventofcode.com/2020/day/4](https://adventofcode.com/2020/day/7)
+[https://adventofcode.com/2020/day/7](https://adventofcode.com/2020/day/7)
 
 ```
 $ python3 07.py
