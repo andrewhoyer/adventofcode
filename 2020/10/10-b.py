@@ -15,12 +15,12 @@ depth        = 0
 tree         = {}
 
 def checkadapters(thisadapter, combinations, depth):
-
+	
 	# Indenting really helps with debugging, to show search depth level
 	#spaces = ''
 	#for _ in range(depth):
 	#	spaces = spaces + ' '
-
+	
 	#print("{}{}".format(spaces,thisadapter))
 	
 	#print("\nCalled checkadapters({},{})".format(thisadapter, combinations))
