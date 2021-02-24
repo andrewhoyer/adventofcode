@@ -15,8 +15,6 @@ def setvaluesformemoryaddresses(binaryarray, startingindex, memvalue, depth):
 		spaces = spaces + '  '		
 	
 	if startingindex > len(binaryarray) - 1:
-		#print("{}set, array {}, startingindex {}, memvalue {}".format(spaces, binaryarray, startingindex, memvalue))
-		#print("{}reached end. [{}] = {}".format(spaces, int("".join(binaryarray), 2), memvalue))
 		values[int("".join(binaryarray), 2)] = memvalue	
 	else:
 		if binaryarray[startingindex] == 'X':
