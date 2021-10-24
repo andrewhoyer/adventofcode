@@ -9,7 +9,9 @@ $ python3 13.py
 
 ## Part 2
 
-This solution to Part 2 is incomplete. It solves the problem for the simpler examples (see input-data2.txt and input-data3.txt) but for the actual input data which is much larger, it takes too long to be considered a solution, and I wasn't able to get the correct answer.
+The second part of this puzzle is the first in this series that really posed a challenge to many participants. As of this writing, 22% of participants completed part 1 and not part 2.
+
+While this puzzle uses recursion, it also requires the solver to recognize the patterns in the data, and account for them.
 
 ```
 $ python3 13-b.py
