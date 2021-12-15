@@ -9,7 +9,6 @@ epsilon = ""
 for row in inputdata:
 	
 	chars = list(row.strip())
-	print(chars)
 	
 	counter = 0
 	zeroes = 0
@@ -22,8 +21,6 @@ for row in inputdata:
 		elif character == '1':
 			columns_one[counter] += 1	
 		
-
-					
 		counter += 1
 	
 counter = 0
@@ -38,17 +35,5 @@ while counter < 12:
 		epsilon += "0"
 
 	counter += 1
-	
-
-print(columns_zero)
-print(columns_one)
-
-print(gamma)
-print(epsilon)
-
-
-print(int(gamma, 2))
-print(int(epsilon, 2))
 
 print(int(gamma, 2) * int(epsilon, 2))
-#print("Horiz: {}, Depth: {}, Multiplied: {}".format(horizontal, depth, horizontal * depth))
