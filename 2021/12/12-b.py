@@ -1,4 +1,4 @@
-def searchcavepath(cave, history, connections, depth):
+def searchcavepath(cave, history, connections, depth, exploredtwice):
 	
 	depth += 1
 	
@@ -23,17 +23,29 @@ def searchcavepath(cave, history, connections, depth):
 	# Loop through each possible connection from the current cave
 	for potentialcave in connections[cave]:
 		
-		# Ignore the start as well as the current cave
+		# Ignore the start as well as the current room
 		if potentialcave == 'start' or potentialcave == cave:
 			continue
+		
+		# Special consideration for lower cased caves	
+		elif potentialcave == potentialcave.lower():
 			
-		elif potentialcave == potentialcave.lower() and potentialcave in thishistory:
-			# If the cave is lower cased, ignore it if it's already in the history
-			continue
+			# Handle whether or not the lower case cave is in the history
+			if potentialcave in thishistory:
+				
+				# Allow for a path to have a single duplicate lower case cave
+				if exploredtwice == False:
+					pathcount += searchcavepath(potentialcave, thishistory, connections, depth, True)
+				else:
+					continue
+				
+			# If the lower case cave is not already in the history, explore it
+			else:
+				pathcount += searchcavepath(potentialcave, thishistory, connections, depth, exploredtwice)
 		
 		else:
-			# Explore the next cave
-			pathcount += searchcavepath(potentialcave, thishistory, connections, depth)
+			# All other cases, explore the next cave
+			pathcount += searchcavepath(potentialcave, thishistory, connections, depth, exploredtwice)
 	
 	return pathcount
 	
@@ -67,9 +79,11 @@ if __name__ == "__main__":
 			connects.append(room1)
 			connections[room2] = connects
 	
+	#print(connections)
 	
 	# Fire up the recurring function
-	numberofpaths = searchcavepath('start', [], connections, 0)
+	
+	numberofpaths = searchcavepath('start', [], connections, 0, False)
 	
 	print("Number of possible paths: {}".format(numberofpaths))
 	
