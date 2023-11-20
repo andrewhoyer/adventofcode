@@ -7,3 +7,8 @@
 ```
 $ python3 08.py
 ```
+
+## Part 2
+
+```
+$ python3 08-b.py

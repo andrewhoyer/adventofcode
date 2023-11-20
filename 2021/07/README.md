@@ -7,3 +7,9 @@
 ```
 $ python3 07.py
 ```
+
+## Part 2
+
+```
+$ python3 07-b.py
+```
