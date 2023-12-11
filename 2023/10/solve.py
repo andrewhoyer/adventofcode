@@ -1,5 +1,6 @@
 import sys
 import pprint
+import math 
 pp = pprint.PrettyPrinter(indent=2)
 
 argv1 = sys.argv[1] # Filename of puzzle data passed as parameter
@@ -35,11 +36,14 @@ next_pipe       = ""
 direction_from  = ""
 steps           = 0
 
+# Part 2 - Used to store coordinates of all pipes
+pipe_coords = []
+
 # Keep finding connecting pipes until "S" is reached, completing the loop.
 while next_pipe != "S":
 
     # At each point, check N, S, W, and E, looking only for pipe connections
-    # that can possibly connect to the current point.
+    # that can possibly connect to the current pipe.
 
     found_direction = False
 
@@ -79,8 +83,59 @@ while next_pipe != "S":
                         direction_from = "W"
                         found_direction = True
 
+    pipe_coords.append([current_x, current_y])
     steps += 1
 
 print(f"Part 1 - Steps to furthest distance from 'S': {steps // 2}")
+
+
+# For Part 2
+# This function takes a point on the grid and compares it to every point
+# along the pipe, calculating avalue between π and -π with the original
+# point as the center. For points inside the shape, the considered lines
+# will eventually make a complete circle. For points outside the shape,
+# it may make a complete revolution, but will always come back to less
+# than a full turn.
+
+def check_radians(col, row, pipe_coords):
+
+    last_radians = -5
+    crossed_boundary = 0
+    
+    for pipe in pipe_coords:
+        
+        new_radians = math.atan2(pipe[0] - col, pipe[1] - row)
+        
+        if last_radians != -5:
+            
+            # Anytime the angle moves between π and -π, log it.
+            if new_radians - last_radians > 4.0:
+                crossed_boundary += 1
+            elif new_radians - last_radians < -4.0:
+                crossed_boundary += 1
+
+        last_radians = new_radians
+    
+    # The test! If the angles calculated complete a full turn, crossing
+    # the π boundary, the result will be odd. Even results means the angle
+    # calculations never made it a full turn (0), or eventually moved back.
+    if crossed_boundary % 2 == 0:
+       return False
+    else:
+        return True
+
+
+# Consider every grid space except for the pipe itself, and determine whether
+# or not it is inside or outside the shape.
+enclosed_space = 0
+for row in range(0, len(grid)):
+    for col in range(0, len(grid[row])):
+        if [col, row] in pipe_coords:
+            pass
+        else:
+            if check_radians(col, row, pipe_coords) == True:
+                enclosed_space += 1
+
+print(f"Part 2 - The number of grid spaces encolsed by the pipe: {enclosed_space}")
 
 exit()
