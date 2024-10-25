@@ -9,7 +9,6 @@ $ python3 solve.py data-input.txt
 
 ## PHP
 
-Solution for Part 1
 ```
-$ php solve.py
+$ php solve.php data-input.txt
 ```
