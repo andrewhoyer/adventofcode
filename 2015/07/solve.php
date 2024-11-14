@@ -15,179 +15,134 @@ foreach ($lines as $line) {
     $gates[$parts[1]] = array( 'value' => -1, 'instructions' => $parts[0], 'gate' => $parts[1], 'set' => false);
 }
 
-//echo(var_dump($gates));
-
+// Loop repeatedly through each line, assigning values to gates. In cases where
+// other gates are used, those are only calculated when the gates in the instructions
+// have a value as well.
 
 $complete = false;
-$loop_counter = 0;
+
 while ($complete == false) {
-    $loop_counter++;
-    echo("\n\n=====================\nloop: $loop_counter\n\n");
+    
     $complete = true;
 
-    $set = 0;
     foreach ($lines as $line) {
         
-
         $parts = explode(' -> ', $line, strlen($line));
-        //echo($parts[1] . "\n");
-        //echo(var_dump($gates[$parts[1]]) . "\n");
-
-        //if ($parts[1] == 'a') {
-        //    echo(var_dump($parts) . "\n");
-        //}
 
         if ($gates[$parts[1]]['set'] == true) {
-            //echo("Already has a value!\n\n");
-            //echo(var_export($gates[$parts[1]]) . "\n");
-            $set++;
+            // Gate is already set
             continue;
+
         } else {
-            //echo("\n\n========\nline: $line\n");
-            //echo("No value yet!\n");
-            //echo '/' . $parts[0] . '/' . '/' . $parts[1] . '/' . "\n";
             
             if (is_numeric($parts[0])) {
                 // It's a straight assignment.
-                echo("straight assignment: $line\n");
-                //echo("check {$parts[1]}: {$gates[$parts[1]]['value']}\n");
 
-                $gates[$parts[1]]['value'] = (int)$parts[0];
-                $gates[$parts[1]]['set'] = true;
-                $set++;
+                $gates[$parts[1]]['value']  = (int)$parts[0];
+                $gates[$parts[1]]['set']    = true;
 
             } else if (str_contains($parts[0], 'AND')) {
-                
+                // There are more checks here because the possibilities are more varied.
+                // Examples:
+                // aa AND bb
+                // 1 AND aa
+
                 $instructions = explode(' ', $parts[0], strlen($parts[0]));
 
+                // In the puzzle data, only the left item in the list can be a gate or a 1.
                 $left = '';
 
                 if (is_numeric($instructions[0])) {
+                    // If it's a number, set the integer value
                     $left = (int)$instructions[0];
+
+                } else if (!$gates[$instructions[0]]['set']) {
+                    // Otherwise it's a gate. If not set, continue.
+                    $complete = false;
+                    continue;
+
                 } else {
+                    // It's a gate, and the gate it set, so get the value
                     $left = $gates[$instructions[0]]['value'];
+
                 }
 
-                if (!$left || !$gates[$instructions[2]]['set']) {
+                // Next, check to see if the right gate is set. If not, continue.
+                if (!$gates[$instructions[2]]['set']) {
                     $complete = false;
-                    //echo("The gate {$left} or {$instructions[2]} has no value yet");
                     continue;
-                }                
-        
-                echo("AND: $line\n"); 
+                }
 
-                $gates[$parts[1]]['value'] = $left & $gates[$instructions[2]]['value'];
-                $gates[$parts[1]]['set'] = true;
-                $set++;
+                // If all checks above ar eokay, do the AND calculation.
+                $gates[$parts[1]]['value']  = ($left & $gates[$instructions[2]]['value']) & 0xFFFF;
+                $gates[$parts[1]]['set']    = true;
 
             } else if (str_contains($parts[0], 'OR')) {
-                
+                // OR lines are simpler, containing two gates.
+
                 $instructions = explode(' ', $parts[0], strlen($parts[0]));
 
                 if (!$gates[$instructions[0]]['set'] || !$gates[$instructions[2]]['set']) {
                     $complete = false;
-                    //echo("The gate {$instructions[0]} has no value yet");
                     continue;
                 }
 
-                echo("OR. $line\n");
-
-                $gates[$parts[1]]['value'] = $gates[$instructions[0]]['value'] | $gates[$instructions[2]]['value'];
-                $gates[$parts[1]]['set'] = true;
-                $set++;
+                $gates[$parts[1]]['value']  = ($gates[$instructions[0]]['value'] | $gates[$instructions[2]]['value']) & 0xFFFF;
+                $gates[$parts[1]]['set']    = true;
 
             } else if (str_contains($parts[0], 'LSHIFT')) {
-                
                 $instructions = explode(' ', $parts[0], strlen($parts[0]));
 
                 if (!$gates[$instructions[0]]['set']) {
                     $complete = false;
-                    //echo("The gate {$instructions[0]} has no value yet");
                     continue;
                 }
                 
-                echo("LSHIFT. $line\n");
-
-                $gates[$parts[1]]['value'] = $gates[$instructions[0]]['value'] << (int)$instructions[2];
-                $gates[$parts[1]]['set'] = true;
-                $set++;
+                $gates[$parts[1]]['value']  = ($gates[$instructions[0]]['value'] << (int)$instructions[2]) & 0xFFFF;
+                $gates[$parts[1]]['set']    = true;
 
             } else if (str_contains($parts[0], 'RSHIFT')) {
-                
                 $instructions = explode(' ', $parts[0], strlen($parts[0]));
 
                 if (!$gates[$instructions[0]]['set']) {
                     $complete = false;
-                    //echo("The gate {$instructions[0]} has no value yet");
                     continue;
                 }
 
-                echo("RSHIFT. $line\n");
+                $gates[$parts[1]]['value']  = ($gates[$instructions[0]]['value'] >> (int)$instructions[2]) & 0xFFFF;
+                $gates[$parts[1]]['set']    = true;
 
-                $gates[$parts[1]]['value'] = $gates[$instructions[0]]['value'] >> (int)$instructions[2];
-                $gates[$parts[1]]['set'] = true;
-                $set++;
-
-            } else if (str_contains($parts[0], 'NOT')) {
-                
+            } else if (str_contains($parts[0], 'NOT')) {                
                 $instructions = explode(' ', $parts[0], strlen($parts[0]));
 
                 if (!$gates[$instructions[1]]['set']) {
                     $complete = false;
-                    //echo("The gate {$instructions[1]} has no value yet");
                     continue;
                 }
 
-                echo("NOT. $line\n");
+                // This is the only line that really needs the conversion to a 
+                // 16-bit integer with & 0xFFFF, although it was added to all of them.
+                // Also note that order of operations here require brackets as placed.
+                $gates[$parts[1]]['value']  = (~$gates[$instructions[1]]['value']) & 0xFFFF;
+                $gates[$parts[1]]['set']    = true;
 
-                $gates[$parts[1]]['value'] = ((~$gates[$instructions[1]]['value']) & 0xFFFF);
-                $gates[$parts[1]]['set'] = true;
-                $set++;
-
-
-            }  else { //else if (!is_numeric($parts[0]) && strlen($parts[0]) == 2) {
-                
-                //echo(var_export($gates[$parts[0]]));
-                //echo(var_export($gates[$parts[1]]));
-
-                //echo("check {$parts[0]}: {$gates[$parts[0]]['value']}\n");
-
-                //$instructions = explode(' ', $parts[0], strlen($parts[0]));
+            }  else { 
+                // A straight assignment, but with another gate.
 
                 if (!$gates[$parts[0]]['set']) {
                     $complete = false;
-                    //echo("The gate {$parts[0]} has no value yet");
                     continue;
                 }
 
-                echo("It's a straight assignment, but with another gate. $line\n");
-
-                $gates[$parts[1]]['value'] = $gates[$parts[0]]['value'];
-                $gates[$parts[1]]['set'] = true;
-                $set++;
+                $gates[$parts[1]]['value']  = $gates[$parts[0]]['value'];
+                $gates[$parts[1]]['set']    = true;
+                
             }
-            
-            echo("after {$parts[1]}: ". var_export($gates[$parts[1]]) . "\n");
 
         }
-        echo("\n");
+        
     }
-    echo("\n\nSet in last loop: $set" . "\n");
-    echo"========================\n\n";
-    
-
-    //if ($gates['a']['set']) {
-    //    break;
-    //}
-
-    //if ($loop_counter > 400) {
-    //    break;
-    //}
 
 }
 
-//echo var_export($gates);
-
-echo("loops: " . $loop_counter . "\n");
-//echo(var_export($gates['a']));
-echo(count($gates));
+echo("The value of gate 'a' is: " . $gates['a']['value'] . "\n");
