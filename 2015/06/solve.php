@@ -45,3 +45,18 @@ foreach ($lines as $line) {
 }
 
 echo("The number of lights turned on: " . count($lights) . "\n");
+
+/*
+// A visualization of the data in a 1000 x 1000 grid.
+
+for ($y = 0; $y <= 1000; $y++) {
+    for ($x = 0; $x <= 1000; $x++) {
+        if (array_key_exists($x . "-" . $y, $lights)) {
+            echo("🟩");
+        } else {
+            echo("⬛️");
+        }
+    }
+    echo("\n");
+}
+*/
