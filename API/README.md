@@ -10,9 +10,11 @@ You can use the Advent of Code API to dynamically create content for private lea
 
 All you need to do now is plug these values into one of the scripts here and start using them.
 
-Please note that it is requested that the Advent of Code API be used no more frequently than 15 minutes.
+Please note that it is requested that the Advent of Code API be used no more frequently than every 15 minutes.
 
-## Python
+## Leaderboard sorted by score
+
+### Python
 
 Use the `leaderboard-by-score.py` script if you want to use the API directly from the command line, on a server, a cron job, etc.
 
@@ -20,8 +22,14 @@ Use the `leaderboard-by-score.py` script if you want to use the API directly fro
 
 Note that the output is formatted with markdown meant for posting to a Discord server. Alter the formatting for whatever your target audience is.
 
-## Zapier
+### Zapier
 
 A version of the script is available in `leaderboard-by-score-zapier.py` that is meant to be used in a Zapier Code action. No inputs are necessary, just create the action, select Python, copy and paste the code, and plug in the values at the top of the script.
 
 Note that the output is formatted with markdown meant for posting to a Discord server. Alter the output formatting for whatever the following actions require.
+
+## Solve times
+
+Use the `leaderboard-solve-times.py` script to produce a CSV file, sorted by local score descending, which shows the solve time in minutes for part 1 and 2 of each of the 25 days in an event.
+
+```python3 leaderboard-solve-times.py```
