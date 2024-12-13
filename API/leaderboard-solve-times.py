@@ -68,7 +68,7 @@ try:
         output = "Name,Score,Stars"
 
         # Create
-        for day in range(1, 26 + 1):                
+        for day in range(1, 26):                
             output += ",D" + str(day) + "P1," + "D" + str(day) + "P2"
         
         output += "\n"
