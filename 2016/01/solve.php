@@ -1,6 +1,7 @@
 <?php
 
 require_once('../../tools/php/class.split.php');
+require_once('../../tools/php/class.output.grid.php');
 
 $filename   = $argv[1];
 $handle     = fopen($filename, 'r');
@@ -46,17 +47,25 @@ foreach ($moves as $move) {
             $pos[0] = $pos[0] - 1;
         }
 
+        $grid_text = '🟥';
+
         // Find the first instance the path overlaps
-        if ($part2 == -1 && in_array($pos[0]. ',' . $pos[1], $path)) {
+        if ($part2 == -1 && array_key_exists($pos[0]. ',' . $pos[1], $path)) {
             $part2 = abs($pos[0]) + abs($pos[1]);
+            $grid_text = '🟩';
         }
 
-        $path[] = $pos[0]. ',' . $pos[1];
+        $path[$pos[0]. ',' . $pos[1]] = $grid_text;
 
         $i++;
     }
 
 }
+
+// Use this to output a visual grid. Write it to a file:
+// $ php solve.php data-input.txt > grid.txt
+//$output = new OutputGrid;
+//$output->output_grid($path);
 
 // The solution to both part 1 and 2 is the distance, x + y from 0, 0.
 echo("Part 1 solution: " . abs($pos[0]) + abs($pos[1]) . "\n");
