@@ -15,44 +15,30 @@ foreach ($ranges as $range) {
 
     $ids = explode("-", $range);
 
-    // Uneven string on both sides, skip
-    if (strlen($ids[0]) % 2 == 1 && strlen($ids[0]) == strlen($ids[1])) {
-        continue;
-    }
-
     // Loop throught all values.
     for ($i = intval($ids[0]);$i <= intval($ids[1]);$i++) {
+
+        // Part 1
 
         $text_i = strval($i); // Treating the number as a string.
         
         if (strlen($text_i) % 2 == 1 ) {
-            continue;
+            // Ignore this value for Part 1 as lenght must be even.
+        } else {
+            if (substr($text_i, 0, strlen($text_i) / 2) == substr($text_i, strlen($text_i) / 2, strlen($text_i) / 2)) {
+                // First half matches the last half
+                $sum_1 += $i;
+            }
         }
 
-        if (substr($text_i, 0, strlen($text_i) / 2) == substr($text_i, strlen($text_i) / 2, strlen($text_i) / 2)) {
-            // First half matches the last half
-            $sum_1 += $i;
-        }
-    }
-}
-
-print("Part 1 solution: " . $sum_1 . "\n");
-
-
-// PART 2
-
-foreach ($ranges as $range) {
-
-    $ids = explode("-", $range);
-
-    for ($i = intval($ids[0]);$i <= intval($ids[1]);$i++) {
+        // Part 2
 
         $text_i     = strval($i);
         $text_len   = strlen($text_i);
         $midpoint   = floor($text_len / 2); // The rounded down middle point of the string.
 
         // Start comparing 1 character, then 2, and on up to the halfway point.
-        for ($j = 1;$j <= $compare_start; $j += 1) {
+        for ($j = 1;$j <= $midpoint; $j += 1) {
 
             // If the full number can be divided evenly into segments, proceed.
             if ($text_len % $j == 0) {
@@ -79,6 +65,7 @@ foreach ($ranges as $range) {
     }
 }
 
+print("Part 1 solution: " . $sum_1 . "\n");
 print("Part 2 solution: " . $sum_2 . "\n");
 
 exit();
