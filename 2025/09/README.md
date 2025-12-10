@@ -1,0 +1,9 @@
+# Day 9
+
+[https://adventofcode.com/2025/day/9](https://adventofcode.com/2025/day/9)
+
+## PHP
+
+```
+$ php solve.php data-input.txt
+```
