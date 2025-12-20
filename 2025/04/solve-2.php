@@ -1,5 +1,7 @@
 <?php
 
+$visualize = false;
+
 $filename   = $argv[1];
 $handle     = fopen($filename, 'r');
 $lines      = explode("\n", fread($handle, filesize($filename)));
@@ -92,6 +94,28 @@ while ($remove != 0) {
         $grid[$item[0]][$item[1]] = '.';
     }
     
+    if ($visualize) {
+
+        system('clear');
+
+        foreach ($grid as $row) {
+
+            foreach ($row as $col) {
+                if ($col == '.') {
+                    print("⬛️");
+                }
+                if ($col == '@') {
+                    print("🧻");
+                }
+            }
+            print("\n");
+
+        }
+
+        usleep(100000); // microseconds
+
+    }
+
 }
 
 print("Part 2 solution: " . $total . "\n");
