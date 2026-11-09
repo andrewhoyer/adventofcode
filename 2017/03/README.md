@@ -7,3 +7,9 @@
 ```
 $ php solve.php
 ```
+
+## Part 2
+
+```
+$ php solve-2.php
+```
