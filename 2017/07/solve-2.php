@@ -95,21 +95,3 @@ function list_weights($name, $level, $caller) {
 	}
 
 }
-
-
-
-
-
-
-
-/*
-foreach ($programs as $program) {
-
-	// As soon as we find the program that isn't in the stacked list, we have our answer!
-	if (! in_array($program, $programs_stacked)) {
-		echo "Solution for Part 1: " . $program . "\n";
-		break;
-	}
-
-}
-*/
